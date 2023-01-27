@@ -1,0 +1,47 @@
+.mastodon-embed {
+  background-color: #33313e;
+  border-radius: 0.25rem;
+  color: white;
+  font-family: sans-serif;
+  padding: 0.5rem;
+}
+
+.mastodon-embed__header {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.mastodon-embed__header img {
+  border-radius: 0.25rem;
+  height: 2.875rem;
+  width: 2.875rem;
+}
+
+.mastodon-embed__profile-information > * {
+  line-height: 1.2;
+}
+
+.mastodon-embed a {
+  text-decoration: none;
+  color: currentColor;
+}
+
+.mastodon-embed a:focus-visible,
+.mastodon-embed a:hover {
+  text-decoration: underline;
+}
+
+.mastodon-embed__display-name {
+  font-weight: bold;
+}
+
+.mastodon-embed__account-name {
+  color: rgb(174, 160, 201);
+  font-size: smaller;
+}
+
+.mastodon-embed__footer {
+  color: rgb(174, 160, 201);
+  font-size: smaller;
+}
