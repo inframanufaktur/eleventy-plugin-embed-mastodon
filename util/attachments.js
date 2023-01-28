@@ -35,7 +35,7 @@ async function handleAttachment(attachment, imageOptions) {
 
   const { description, url } = attachment
 
-  if (!description) {
+  if (description === null) {
     console.warn(
       `Plugin Mastodon: Media Attachment ${attachment.url} has no \`alt\` text`,
     )
@@ -47,6 +47,7 @@ async function handleAttachment(attachment, imageOptions) {
   const parsed = await Image(url, { ...imageOptions, formats })
   const imageAttributes = {
     ...defaultAttributes,
+    // set alt to an empty string as we are in no position to change this and have warned before
     alt: description ?? '',
     sizes: imageOptions.sizes ?? '100%',
   }
