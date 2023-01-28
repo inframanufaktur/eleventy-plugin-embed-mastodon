@@ -6,8 +6,18 @@ const minifyOptions = {
   collapseWhitespace: true,
 }
 
-function parsePostResponse(postData) {
+function parsePostData(postData) {
   return JSON.parse(postData)
+}
+
+function getPostData(rawResponse) {
+  const parsed = parsePostData(rawResponse.body)
+
+  if (parsed.statuses) {
+    return parsed.statuses[0]
+  }
+
+  return parsed
 }
 
 function parseTimestamp(dateString) {
@@ -53,10 +63,10 @@ function renderFooter({
   </footer>`
 }
 
-async function createPostHTML(id, options) {
-  const { body } = await fetchPost(id, options)
+async function createPostHTML(id, remoteLink, options) {
+  const rawData = await fetchPost(id, remoteLink, options)
+  const postData = getPostData(rawData)
 
-  const postData = parsePostResponse(body)
   const { url, content, media_attachments, account } = postData
 
   console.log('🧑‍🔬', url, media_attachments.length)

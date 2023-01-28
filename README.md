@@ -63,7 +63,7 @@ The federated nature of Mastodon requires some things to keep in mind:
 
 ### IDs
 
-IDs are unique for each server. For the embed to work you’ll need to use the ID shown on your instance, not the one of the original post URL.
+IDs are unique for each server. If you want to embed by ID, you need to copy the ID from your server. Otherwise use the full link so that the plugin can perform a search.
 
 ## To Do
 

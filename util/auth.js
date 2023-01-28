@@ -8,4 +8,10 @@ function checkAuth(options) {
   return Object.getOwnPropertyNames(options).includes('bearer')
 }
 
-module.exports = { checkAuth }
+function getAuthHeader(token, apiVersion) {
+  return apiVersion === 'v1'
+    ? { Bearer: token }
+    : { Authorization: `Bearer ${token}` }
+}
+
+module.exports = { checkAuth, getAuthHeader }

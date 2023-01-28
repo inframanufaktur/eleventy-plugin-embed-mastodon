@@ -4,7 +4,7 @@ const pkg = require('./package.json')
 const { checkAuth } = require('./util/auth')
 const { createPostHTML } = require('./util/posts')
 
-const embedPosts = async function embedPosts(content, options) {}
+// const POST_MATCHER = //
 
 const defaultOptions = {
   mode: 'full',
@@ -15,10 +15,7 @@ const defaultOptions = {
 const defaultImageOptions = {
   outputDir: './_site/img/',
 }
-module.exports = function (
-  eleventyConfig,
-  { userBaseOptions, userImageOptions },
-) {
+module.exports = function (eleventyConfig, { baseOptions, imageOptions }) {
   try {
     eleventyConfig.versionCheck(pkg['11ty'].compatibility)
   } catch (e) {
@@ -27,18 +24,24 @@ module.exports = function (
     )
   }
 
-  let options = { ...defaultOptions, ...userBaseOptions }
-  let imageOptions = { ...defaultImageOptions, userImageOptions }
+  let options = {
+    ...defaultOptions,
+    ...baseOptions,
+    imageOptions: { ...defaultImageOptions, ...imageOptions },
+  }
 
   eleventyConfig.addTransform('embedMastodonPosts', async function (content) {
-    let postRegExp = /<p ?.*>mastodon:(\d*)<\/p>/gm
+    let mastodonParagraph =
+      /<p ?.*>mastodon:([\w\d]*?.?[\w\d]*.[a-z]*\/@[\w\d_]*\/)?(\d*)<\/p>/gim
 
     if (checkAuth(options)) {
-      return await asyncReplace(content, postRegExp, async (match, id) => {
-        console.log('🧑‍🔬', options.host, id)
-
-        return await createPostHTML(id, { ...options, imageOptions })
-      })
+      return await asyncReplace(
+        content,
+        mastodonParagraph,
+        async (match, remoteLink, id) => {
+          return await createPostHTML(id, remoteLink, options)
+        },
+      )
     }
 
     console.error(
