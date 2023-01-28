@@ -10,12 +10,15 @@ const defaultOptions = {
   mode: 'full',
   cache: true,
   cacheDir: '.cache',
-  imageOptions: {
-    outputDir: './_site/img/',
-  },
 }
 
-module.exports = function (eleventyConfig, userOptions) {
+const defaultImageOptions = {
+  outputDir: './_site/img/',
+}
+module.exports = function (
+  eleventyConfig,
+  { userBaseOptions, userImageOptions },
+) {
   try {
     eleventyConfig.versionCheck(pkg['11ty'].compatibility)
   } catch (e) {
@@ -24,7 +27,8 @@ module.exports = function (eleventyConfig, userOptions) {
     )
   }
 
-  let options = { ...defaultOptions, ...userOptions }
+  let options = { ...defaultOptions, ...userBaseOptions }
+  let imageOptions = { ...defaultImageOptions, userImageOptions }
 
   eleventyConfig.addTransform('embedMastodonPosts', async function (content) {
     let postRegExp = /<p ?.*>mastodon:(\d*)<\/p>/gm
@@ -33,7 +37,7 @@ module.exports = function (eleventyConfig, userOptions) {
       return await asyncReplace(content, postRegExp, async (match, id) => {
         console.log('🧑‍🔬', options.host, id)
 
-        return await createPostHTML(id, options)
+        return await createPostHTML(id, { ...options, imageOptions })
       })
     }
 
