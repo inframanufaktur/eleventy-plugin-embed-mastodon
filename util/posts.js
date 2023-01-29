@@ -1,5 +1,6 @@
 const { minify } = require('html-minifier')
 const { handleAttachment } = require('./attachments')
+const { postVisibilityAllowsEmbed } = require('./auth')
 const { fetchPost } = require('./network')
 
 const minifyOptions = {
@@ -67,9 +68,15 @@ async function createPostHTML(id, remoteLink, options) {
   const rawData = await fetchPost(id, remoteLink, options)
   const postData = getPostData(rawData)
 
-  const { url, content, media_attachments, account } = postData
+  const { url, content, media_attachments, account, visibility } = postData
 
-  console.log('🧑‍🔬', url, media_attachments.length)
+  if (!postVisibilityAllowsEmbed(visibility)) {
+    console.error(
+      `Plugin Embed Mastodon: Post ${url} has visibility settings that do not allow embed.`,
+    )
+
+    return
+  }
 
   return minify(
     `<article class="mastodon-embed">

@@ -14,4 +14,8 @@ function getAuthHeader(token, apiVersion) {
     : { Authorization: `Bearer ${token}` }
 }
 
-module.exports = { checkAuth, getAuthHeader }
+function postVisibilityAllowsEmbed(visibility) {
+  return ['public', 'unlisted'].includes(visibility)
+}
+
+module.exports = { checkAuth, getAuthHeader, postVisibilityAllowsEmbed }
