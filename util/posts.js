@@ -32,6 +32,10 @@ function parseTimestamp(dateString) {
   }).format(new Date(dateString))
 }
 
+function getIconClass(name) {
+  return `mastodon-embed__has-icon -is-icon-${name}`
+}
+
 function getApp(application) {
   if (!application) {
     return ''
@@ -69,11 +73,19 @@ function renderFooter({
     <span class="mastodon-embed__timestamp"><a href="${url}">${parseTimestamp(
     created_at,
   )}</a></span>
-    <span class="mastodon-embed__visibility">${visibility}</span>
+    <span class="mastodon-embed__visibility ${getIconClass(
+      visibility,
+    )}" aria-label=${visibility}></span>
     ${getApp(application)}
-    <span class="mastodon-embed__replies">${replies_count}</span>
-    <span class="mastodon-embed__reblogs">${reblogs_count}</span>
-    <span class="mastodon-embed__favourites">${favourites_count}</span>
+    <span class="mastodon-embed__replies ${getIconClass(
+      'replies',
+    )}">${replies_count}</span>
+    <span class="mastodon-embed__reblogs ${getIconClass(
+      'reblogs',
+    )}">${reblogs_count}</span>
+    <span class="mastodon-embed__favourites ${getIconClass(
+      'favs',
+    )}">${favourites_count}</span>
   </footer>`
 }
 

@@ -1,5 +1,5 @@
 const asyncReplace = require('string-replace-async')
-
+const path = require('path')
 const pkg = require('./package.json')
 const { checkAuth } = require('./util/auth')
 const { createPostHTML } = require('./util/posts')
@@ -49,5 +49,9 @@ module.exports = function (eleventyConfig, { baseOptions, imageOptions }) {
     )
 
     return content
+  })
+
+  eleventyConfig.addPassthroughCopy({
+    [`${path.join(__dirname, 'lib/icons')}`]: '/img/mastodon-embed-plugin',
   })
 }
