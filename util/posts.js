@@ -32,6 +32,17 @@ function parseTimestamp(dateString) {
   }).format(new Date(dateString))
 }
 
+function getApp(application) {
+  if (!application) {
+    return ''
+  }
+  const { website, name } = application
+
+  return `<span class="mastodon-embed__application">${
+    website ? `<a href="${website}>` : ''
+  }${name}${website ? '</a>' : ''}</span>`
+}
+
 async function renderHeader({ display_name, acct, avatar, url }, imageOptions) {
   return `<header class="mastodon-embed__header">
     ${await handleAttachment(
@@ -51,6 +62,7 @@ function renderFooter({
   reblogs_count,
   replies_count,
   visibility,
+  application,
   url,
 }) {
   return `<footer class="mastodon-embed__footer">
@@ -58,6 +70,7 @@ function renderFooter({
     created_at,
   )}</a></span>
     <span class="mastodon-embed__visibility">${visibility}</span>
+    ${getApp(application)}
     <span class="mastodon-embed__replies">${replies_count}</span>
     <span class="mastodon-embed__reblogs">${reblogs_count}</span>
     <span class="mastodon-embed__favourites">${favourites_count}</span>
@@ -81,7 +94,7 @@ async function createPostHTML(id, remoteLink, options) {
   return minify(
     `<article class="mastodon-embed">
     ${await renderHeader(account, options.imageOptions)}
-    ${content}
+    <section class="mastodon-embed__content">${content}</section>
     ${renderFooter(postData)}
   </article>`,
     minifyOptions,
