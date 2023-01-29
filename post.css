@@ -6,6 +6,10 @@
   padding: 0.5rem;
 }
 
+.mastodon-embed > * + * {
+  margin-top: 1rem;
+}
+
 .mastodon-embed__header {
   align-items: center;
   display: flex;
@@ -22,13 +26,13 @@
   line-height: 1.2;
 }
 
-.mastodon-embed a {
+.mastodon-embed :any-link {
   text-decoration: none;
   color: currentColor;
 }
 
-.mastodon-embed a:focus-visible,
-.mastodon-embed a:hover {
+.mastodon-embed :any-link:focus-visible,
+.mastodon-embed :any-link:hover {
   text-decoration: underline;
 }
 
@@ -41,7 +45,58 @@
   font-size: smaller;
 }
 
+.mastodon-embed__content :any-link {
+  color: #6bc1ff;
+}
+
+.mastodon-embed__content .ellipsis::after {
+  content: '…';
+}
+
+.mastodon-embed__content .invisible {
+  display: none;
+}
+
 .mastodon-embed__footer {
   color: rgb(174, 160, 201);
+  display: inline-flex;
   font-size: smaller;
+  gap: 0.5rem;
+}
+
+.mastodon-embed__has-icon {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.25rem;
+  min-width: 0.66rem;
+}
+
+.mastodon-embed__has-icon.-is-icon-public {
+  --icon-name: url('/img/mastodon-embed-plugin/mep-globe.svg');
+}
+
+.mastodon-embed__has-icon.-is-icon-unlisted {
+  --icon-name: url('/img/mastodon-embed-plugin/mep-unlock.svg');
+}
+
+.mastodon-embed__has-icon.-is-icon-replies {
+  --icon-name: url('/img/mastodon-embed-plugin/mep-reply.svg');
+}
+
+.mastodon-embed__has-icon.-is-icon-reblogs {
+  --icon-name: url('/img/mastodon-embed-plugin/mep-repeat.svg');
+}
+
+.mastodon-embed__has-icon.-is-icon-favs {
+  --icon-name: url('/img/mastodon-embed-plugin/mep-star.svg');
+}
+
+.mastodon-embed__has-icon::before {
+  background-image: var(--icon-name);
+  background-position: center;
+  background-repeat: no-repeat;
+  content: '';
+  display: inline-block;
+  height: 0.66rem;
+  width: 0.66rem;
 }
