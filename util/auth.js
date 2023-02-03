@@ -2,10 +2,14 @@
  * Check if Bearer is in options
  *
  * @param {object} options
- * @param {string} options.bearer
+ * @param {string} options.token
  */
 function checkAuth(options) {
-  return Object.getOwnPropertyNames(options).includes('bearer')
+  return (
+    Object.getOwnPropertyNames(options).includes('token') &&
+    typeof options.token === 'string' &&
+    options.token.length > 1
+  )
 }
 
 function getAuthHeader(token, apiVersion) {
