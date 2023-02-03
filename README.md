@@ -6,7 +6,12 @@ Supports two modes: `full` and `quote`. Full mode is a «classic» emded, and qu
 
 The plugin parses all images through `@11ty/eleventy-img`.
 
-0 client-side JavaScript. Posts are cached (soon).
+## Features
+
+- Completely static embed, no client side JS
+- Support for posts on remote instances through Mastodon’s search API
+- Post requests are cached
+- Images are parsed through 11ty’s image platform
 
 ## Configuration
 
@@ -19,19 +24,19 @@ type baseOptions = {
   host: string,
   bearer: string,
   mode?: 'full' | 'quote',
-  cache?: boolean,
   cacheDir?: string,
+  cacheDuration?: string,
 }
 ```
 
 - host: Your instance. E.g. `front-end.social` or `lgbtqia.space`. Domain name plus TLD only.
 - bearer: Access token
 
-#### Default value
+#### Default values
 
 - `mode`: `full`, renders complete embed code. `quote` renders a reduced blockquote
-- `cache`: `true`
-- `cacheDir`: `.cache`
+- `cacheDir`: `.mastodon`
+- `cacheDuration`: `1y` (profile pictures are saved for 2 weeks)
 
 ### `imageOptions`
 
@@ -47,7 +52,21 @@ type imageOptions = {
 - `outputDir`: './\_site/img/'. You _need_ to change this if your dist folder is not `_site`
 - `urlPath`: '/img/'.
 
+### Styling
+
+You can import `@inframanufaktur/eleventy-plugin-embed-mastodon/post.css` for default styles which mirror the Mastodon design.
+
 ## Usage
+
+### Using posts from other remotes
+
+If you add a full instance link, the plugin will look up the status via search:
+
+```
+mastodon:dair-community.social/@KimCrayton1/109766923696372660
+```
+
+Please note: remove `https://` for this to work.
 
 ### Shortcode
 
@@ -72,7 +91,7 @@ IDs are unique for each server. If you want to embed by ID, you need to copy the
 - [ ] Overwrite config mode for single posts through shortcode/transform
 - [ ] Error handling
 - [ ] Shortcode
-- [ ] Post caching
+- [x] Post caching
 - [ ] Images
 - [ ] Content Warnings
 
