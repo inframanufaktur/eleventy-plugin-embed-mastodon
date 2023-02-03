@@ -4,8 +4,6 @@ const pkg = require('./package.json')
 const { checkAuth } = require('./util/auth')
 const { createPostHTML } = require('./util/posts')
 
-// const POST_MATCHER = //
-
 const defaultOptions = {
   mode: 'full',
   cache: true,
@@ -34,26 +32,46 @@ module.exports = function (eleventyConfig, { baseOptions, imageOptions }) {
     imageOptions: { ...defaultImageOptions, ...imageOptions },
   }
 
+  if (!checkAuth(options)) {
+    console.error(
+      'Plugin Embed Mastodon: Auth check unsuccessful. Aborting init. Check if `token` is set.',
+    )
+
+    return
+  }
+
+  eleventyConfig.addAsyncShortcode(
+    'embedMastodon',
+    async function (idOrLink, overwriteMode) {
+      let mastodonLinkOrId =
+        /(?:https:\/\/)?([\w\d\-]*?.?[\w\d\-]*.[a-z]*\/@[\w\d_]*(?:@[\w\d]*?.?[\w\d]*.[a-z]*)?\/)?(\d*)/gim
+
+      const [fullMatch, remoteLink, id] = mastodonLinkOrId.exec(idOrLink)
+
+      if (!fullMatch) {
+        console.log(
+          `Plugin Embed Mastodon: ${idOrLink} seems to be no valid Mastodon link/ID.`,
+        )
+
+        return ''
+      }
+
+      return await createPostHTML(id, remoteLink, options)
+    },
+  )
+
   eleventyConfig.addTransform('embedMastodonPosts', async function (content) {
     // https://regexr.com/77hk9
     let mastodonParagraph =
-      /<p ?.*>mastodon:([\wd\-]*?.?[\wd\-]*.[a-z]*\/@[\wd_]*(?:@[\wd]*?.?[\wd]*.[a-z]*)?\/)?(\d*)<\/p>/gim
+      /<p ?.*>mastodon:(?:https:\/\/)?([\wd\-]*?.?[\wd\-]*.[a-z]*\/@[\wd_]*(?:@[\wd]*?.?[\wd]*.[a-z]*)?\/)?(\d*)<\/p>/gim
 
-    if (checkAuth(options)) {
-      return await asyncReplace(
-        content,
-        mastodonParagraph,
-        async (match, remoteLink, id) => {
-          return await createPostHTML(id, remoteLink, options)
-        },
-      )
-    }
-
-    console.error(
-      'Plugin Embed Mastodon: Auth check unsuccessful. Returning content.',
+    return await asyncReplace(
+      content,
+      mastodonParagraph,
+      async (match, remoteLink, id) => {
+        return await createPostHTML(id, remoteLink, options)
+      },
     )
-
-    return content
   })
 
   eleventyConfig.addPassthroughCopy({

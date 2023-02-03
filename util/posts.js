@@ -101,17 +101,14 @@ async function createPostHTML(id, remoteLink, options) {
     return
   }
 
-  return minify(
-    `<article class="mastodon-embed">
+  return `<article class="mastodon-embed">
     ${await renderHeader(account, options.imageOptions, {
       duration: options.cacheDuration,
       directory: options.cacheDir,
     })}
     <section class="mastodon-embed__content">${content}</section>
     ${renderFooter(postData)}
-  </article>`,
-    minifyOptions,
-  )
+  </article>`
 }
 
 module.exports = { createPostHTML }
