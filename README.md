@@ -2,7 +2,7 @@
 
 Embed Mastodon posts in your Eleventy pages.
 
-Supports two modes: `full` and `quote`. Full mode is a «classic» emded, and quote renders a reduced blockquote.
+Supports two modes: `full` and `quote` (coming soon). Full mode is a «classic» emded, and quote renders a reduced blockquote.
 
 The plugin parses all images through `@11ty/eleventy-img`.
 
@@ -13,6 +13,56 @@ The plugin parses all images through `@11ty/eleventy-img`.
 - Post requests are cached
 - Images are parsed through 11ty’s image platform
 
+## Usage
+
+The plugin can work with posts in the following formats:
+
+```bash
+dair-community.social/@KimCrayton1/109766923696372660
+
+https://dair-community.social/@KimCrayton1/109766923696372660 # shortcode only
+
+mastodon.dair-community.social/@KimCrayton1/109766923696372660
+
+chaos.social/@koalie@mastodon.social/109800699318730970
+
+https://chaos.social/@koalie@mastodon.domain.social/109800699318730970 # shortcode only
+
+109756523208056473
+```
+
+Note: ID only works only with posts from the instance which has been specified as `host` in the options, the `token` must be valid on this instance.
+
+### Using posts from other remotes
+
+If you add a full instance link, the plugin will look up the status via search:
+
+```
+mastodon:dair-community.social/@KimCrayton1/109766923696372660
+```
+
+### Shortcode
+
+```njk
+{% embedMastodon 'https://dair-community.social/@KimCrayton1/109766923696372660' %}
+```
+
+Note: Any of the formats from above works.
+
+### Transform
+
+Caveat: If you want to use transforms, you _must_ omit `https://`. The reason is that I don’t want to maintain a reg exp that parses the links.
+
+Mark the paragraph you want to transform with `mastodon:`. This is needed because there’s no way to know if something link like might be a Mastodon instance.
+
+Example:
+
+```bash
+mastodon:109756061321167818
+
+mastodon:dair-community.social/@KimCrayton1/109766923696372660
+```
+
 ## Configuration
 
 Configure the plugin by passing in an object with basic options and options for image processing:
@@ -22,7 +72,7 @@ Configure the plugin by passing in an object with basic options and options for 
 ```js
 type baseOptions = {
   host: string,
-  bearer: string,
+  token: string,
   mode?: 'full' | 'quote',
   cacheDir?: string,
   cacheDuration?: string,
@@ -30,7 +80,7 @@ type baseOptions = {
 ```
 
 - host: Your instance. E.g. `front-end.social` or `lgbtqia.space`. Domain name plus TLD only.
-- bearer: Access token
+- token: Access token
 
 #### Default values
 
@@ -56,26 +106,6 @@ type imageOptions = {
 
 You can import `@inframanufaktur/eleventy-plugin-embed-mastodon/post.css` for default styles which mirror the Mastodon design.
 
-## Usage
-
-### Using posts from other remotes
-
-If you add a full instance link, the plugin will look up the status via search:
-
-```
-mastodon:dair-community.social/@KimCrayton1/109766923696372660
-```
-
-Please note: remove `https://` for this to work.
-
-### Shortcode
-
-NotImplementedError.
-
-### Transform
-
-The plugin picks up all paragraphs which have `mastodon:123456789` as their only content, where `123456789` is a post ID.
-
 ## Federation Gotchas
 
 The federated nature of Mastodon requires some things to keep in mind:
@@ -90,7 +120,7 @@ IDs are unique for each server. If you want to embed by ID, you need to copy the
 - [ ] Quote mode
 - [ ] Overwrite config mode for single posts through shortcode/transform
 - [ ] Error handling
-- [ ] Shortcode
+- [x] Shortcode
 - [x] Post caching
 - [ ] Images
 - [ ] Content Warnings

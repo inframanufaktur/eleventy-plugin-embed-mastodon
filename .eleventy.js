@@ -63,7 +63,7 @@ module.exports = function (eleventyConfig, { baseOptions, imageOptions }) {
   eleventyConfig.addTransform('embedMastodonPosts', async function (content) {
     // https://regexr.com/77hk9
     let mastodonParagraph =
-      /<p ?.*>mastodon:(?:https:\/\/)?([\wd\-]*?.?[\wd\-]*.[a-z]*\/@[\wd_]*(?:@[\wd]*?.?[\wd]*.[a-z]*)?\/)?(\d*)<\/p>/gim
+      /<p ?.*>mastodon:([\wd\-]*?.?[\wd\-]*.[a-z]*\/@[\wd_]*(?:@[\wd]*?.?[\wd]*.[a-z]*)?\/)?(\d*)<\/p>/gim
 
     return await asyncReplace(
       content,
