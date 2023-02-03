@@ -30,7 +30,7 @@ function getFileExtension(url) {
  * @param {string} attachment.url
  * @param {string | null} attachment.description
  */
-async function handleAttachment(attachment, imageOptions) {
+async function handleAttachment(attachment, imageOptions, cacheOptions = {}) {
   console.log('🧑‍🔬', imageOptions)
 
   const { description, url } = attachment
@@ -44,7 +44,11 @@ async function handleAttachment(attachment, imageOptions) {
   const formats =
     parserDefaults.formats.get(getFileExtension(url)) ?? defaultFormats
 
-  const parsed = await Image(url, { ...imageOptions, formats })
+  const parsed = await Image(url, {
+    ...imageOptions,
+    formats,
+    cacheOptions,
+  })
   const imageAttributes = {
     ...defaultAttributes,
     // set alt to an empty string as we are in no position to change this and have warned before

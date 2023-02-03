@@ -7,18 +7,12 @@ const minifyOptions = {
   collapseWhitespace: true,
 }
 
-function parsePostData(postData) {
-  return JSON.parse(postData)
-}
-
-function getPostData(rawResponse) {
-  const parsed = parsePostData(rawResponse.body)
-
-  if (parsed.statuses) {
-    return parsed.statuses[0]
+function getPostData(postData) {
+  if (postData.statuses) {
+    return postData.statuses[0]
   }
 
-  return parsed
+  return postData
 }
 
 function parseTimestamp(dateString) {
@@ -47,11 +41,16 @@ function getApp(application) {
   }${name}${website ? '</a>' : ''}</span>`
 }
 
-async function renderHeader({ display_name, acct, avatar, url }, imageOptions) {
+async function renderHeader(
+  { display_name, acct, avatar, url },
+  imageOptions,
+  { directory },
+) {
   return `<header class="mastodon-embed__header">
     ${await handleAttachment(
       { url: avatar, description: '' },
       { ...imageOptions, sizes: '2.875rem' },
+      { directory, duration: '2w' },
     )}
     <div class="mastodon-embed__profile-information">
       <p><a href="${url}"><span class="mastodon-embed__display-name">${display_name}</span></a><br />
@@ -70,9 +69,9 @@ function renderFooter({
   url,
 }) {
   return `<footer class="mastodon-embed__footer">
-    <span class="mastodon-embed__timestamp"><a href="${url}">${parseTimestamp(
-    created_at,
-  )}</a></span>
+    <span class="mastodon-embed__timestamp"><a href="${url}">
+      <time datetime="${created_at}">${parseTimestamp(created_at)}</time>
+    </a></span>
     <span class="mastodon-embed__visibility ${getIconClass(
       visibility,
     )}" aria-label=${visibility}></span>
@@ -90,8 +89,7 @@ function renderFooter({
 }
 
 async function createPostHTML(id, remoteLink, options) {
-  const rawData = await fetchPost(id, remoteLink, options)
-  const postData = getPostData(rawData)
+  const postData = await fetchPost(id, remoteLink, options)
 
   const { url, content, media_attachments, account, visibility } = postData
 
@@ -105,7 +103,10 @@ async function createPostHTML(id, remoteLink, options) {
 
   return minify(
     `<article class="mastodon-embed">
-    ${await renderHeader(account, options.imageOptions)}
+    ${await renderHeader(account, options.imageOptions, {
+      duration: options.cacheDuration,
+      directory: options.cacheDir,
+    })}
     <section class="mastodon-embed__content">${content}</section>
     ${renderFooter(postData)}
   </article>`,

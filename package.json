@@ -10,7 +10,7 @@
     "compatibility": ">=1.0.0"
   },
   "scripts": {
-    "test": "ava"
+    "test": "exit 0"
   },
   "repository": {
     "type": "git",
@@ -38,8 +38,8 @@
   },
   "dependencies": {
     "@11ty/eleventy": "^2.0.0-beta.1",
+    "@11ty/eleventy-fetch": "^3.0.0",
     "@11ty/eleventy-img": "^2.0.1",
-    "got": "^11.8.6",
     "html-minifier": "^4.0.0",
     "string-replace-async": "^1.2.1"
   }

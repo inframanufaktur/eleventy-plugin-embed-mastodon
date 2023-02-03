@@ -1,45 +1,55 @@
-const { default: got } = require('got/dist/source')
+const EleventyFetch = require('@11ty/eleventy-fetch')
 const { getAuthHeader } = require('./auth')
 
-function makePostURL(id, { host, apiVersion }) {
-  return `https://${host}/api/${apiVersion}/statuses/${id}`
+function makePostURL(id, { host, statusApiVersion = 'v1' }) {
+  return `https://${host}/api/${statusApiVersion}/statuses/${id}`
 }
 
-function makeSearch(search, { host, apiVersion }) {
-  return `https://${host}/api/${apiVersion}/search?q=${search}&resolve=true`
+function makeSearch(search, { host, searchApiVersion = 'v2' }) {
+  return `https://${host}/api/${searchApiVersion}/search?q=${search}&resolve=true`
 }
 
-function getById(id, host, token, apiVersion = 'v1') {
-  return got(makePostURL(id, { host, apiVersion }), {
-    headers: {
-      ...getAuthHeader(token, apiVersion),
+function fetchURL(url, { cacheDir, cacheDuration, token, apiVersion }) {
+  return EleventyFetch(url, {
+    duration: cacheDuration,
+    directory: cacheDir,
+    type: 'json',
+    fetchOptions: {
+      headers: {
+        ...getAuthHeader(token, apiVersion),
+      },
     },
   })
 }
 
-function getBySearch(remoteLink, id, { token, host }, apiVersion = 'v2') {
-  const searchURL = makeSearch(`https://${remoteLink}/${id}`, {
-    host,
-    apiVersion,
-  })
-
-  return got(searchURL, {
-    headers: {
-      ...getAuthHeader(token, apiVersion),
-    },
+function getById(id, options) {
+  return fetchURL(makePostURL(id, options), {
+    ...options,
+    apiVersion: options.statusApiVersion,
   })
 }
 
-async function fetchPost(id, remoteLink, { host, bearer } = {}) {
+async function getBySearch(remoteLink, id, options) {
+  const searchURL = makeSearch(`https://${remoteLink}/${id}`, options)
+
+  const { statuses } = await fetchURL(searchURL, {
+    ...options,
+    apiVersion: options.searchApiVersion,
+  })
+
+  return statuses[0]
+}
+
+async function fetchPost(id, remoteLink, options) {
   const isOnOwnInstance = !remoteLink || remoteLink.includes('host')
 
   console.log('🧑‍🔬 fetchPost:', id, remoteLink, isOnOwnInstance)
 
   if (isOnOwnInstance) {
-    return getById(id, host, bearer)
+    return getById(id, options)
   }
 
-  return getBySearch(remoteLink, id, { token: bearer, host })
+  return getBySearch(remoteLink, id, options)
 }
 
-module.exports = { makePostURL, fetchPost }
+module.exports = { makePostURL, fetchPost, fetchURL }

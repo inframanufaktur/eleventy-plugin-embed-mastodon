@@ -9,12 +9,16 @@ const { createPostHTML } = require('./util/posts')
 const defaultOptions = {
   mode: 'full',
   cache: true,
-  cacheDir: '.cache',
+  cacheDir: '.mastodon',
+  cacheDuration: '1y',
+  statusApiVersion: 'v1',
+  searchApiVersion: 'v2',
 }
 
 const defaultImageOptions = {
   outputDir: './_site/img/',
 }
+
 module.exports = function (eleventyConfig, { baseOptions, imageOptions }) {
   try {
     eleventyConfig.versionCheck(pkg['11ty'].compatibility)
