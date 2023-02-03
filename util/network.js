@@ -41,9 +41,7 @@ async function getBySearch(remoteLink, id, options) {
 }
 
 async function fetchPost(id, remoteLink, options) {
-  const isOnOwnInstance = !remoteLink || remoteLink.includes('host')
-
-  console.log('🧑‍🔬 fetchPost:', id, remoteLink, isOnOwnInstance)
+  const isOnOwnInstance = !remoteLink || remoteLink.startsWith(options.host)
 
   if (isOnOwnInstance) {
     return getById(id, options)
