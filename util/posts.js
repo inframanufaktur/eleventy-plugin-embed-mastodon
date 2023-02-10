@@ -37,7 +37,7 @@ function getApp(application) {
   const { website, name } = application
 
   return `<span class="mastodon-embed__application">${
-    website ? `<a href="${website}>` : ''
+    website ? `<a href="${website}">` : ''
   }${name}${website ? '</a>' : ''}</span>`
 }
 
