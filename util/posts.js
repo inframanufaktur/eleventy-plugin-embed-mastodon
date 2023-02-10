@@ -59,6 +59,41 @@ async function renderHeader(
   </header>`
 }
 
+async function renderCard(
+  { url, title, provider_name, image, description },
+  imageOptions,
+  cacheOptions,
+) {
+  const imgClass = image ? '-has-image' : '-no-image'
+
+  return `
+<section class="mastodon-embed__card ${imgClass}">
+  <div class="mastodon-embed__card-image">
+    ${
+      image
+        ? await handleAttachment(
+            { url: image, description: '' },
+            { ...imageOptions, sizes: '6rem' },
+            cacheOptions,
+          )
+        : ''
+    }
+  </div>
+  <div>
+    <p class="mastodon-embed__card-title">
+      <a href="${url}" class="mastodon-embed__card-link">${title}</a>
+    </p>
+    ${
+      description
+        ? `<p class="mastodon-embed__card-description">${description}</p>`
+        : ''
+    }
+    <small>${provider_name}</small>
+  </div>
+</section>
+  `.trim()
+}
+
 function renderFooter({
   created_at,
   favourites_count,
@@ -91,7 +126,12 @@ function renderFooter({
 async function createPostHTML(id, remoteLink, options) {
   const postData = await fetchPost(id, remoteLink, options)
 
-  const { url, content, media_attachments, account, visibility } = postData
+  const { url, content, media_attachments, card, account, visibility } =
+    postData
+  const cacheOptions = {
+    duration: options.cacheDuration,
+    directory: options.cacheDir,
+  }
 
   if (!postVisibilityAllowsEmbed(visibility)) {
     console.error(
@@ -102,11 +142,9 @@ async function createPostHTML(id, remoteLink, options) {
   }
 
   return `<article class="mastodon-embed">
-    ${await renderHeader(account, options.imageOptions, {
-      duration: options.cacheDuration,
-      directory: options.cacheDir,
-    })}
+    ${await renderHeader(account, options.imageOptions, cacheOptions)}
     <section class="mastodon-embed__content">${content}</section>
+    ${card ? await renderCard(card, options.imageOptions, cacheOptions) : ''}
     ${renderFooter(postData)}
   </article>`
 }

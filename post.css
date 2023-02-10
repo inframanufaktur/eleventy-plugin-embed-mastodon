@@ -100,3 +100,52 @@
   height: 0.66rem;
   width: 0.66rem;
 }
+
+.mastodon-embed__card {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.mastodon-embed__card-image {
+  aspect-ratio: 1;
+  background-color: #5a5f6f;
+  background-image: url('/img/mastodon-embed-plugin/mep-file-lines.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 25%;
+  border-bottom-left-radius: 0.25rem;
+  border-top-left-radius: 0.25rem;
+  overflow: hidden;
+  flex: 1 0 6.25rem;
+}
+
+.mastodon-embed__card-image img {
+  aspect-ratio: inherit;
+  display: block;
+  object-fit: cover;
+}
+
+.mastodon-embed__card.-no-image .mastodon-embed__card-image {
+  aspect-ratio: 1;
+}
+
+.mastodon-embed__card-title {
+  font-weight: bold;
+}
+
+.mastodon-embed__card-link::after {
+  content: '';
+  inset: 0;
+  position: absolute;
+}
+
+.mastodon-embed__card-description {
+  display: var(--pme-description-display, none);
+  font-size: smaller;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: var(--pme-description-width);
+}
