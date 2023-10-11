@@ -31,8 +31,6 @@ function getFileExtension(url) {
  * @param {string | null} attachment.description
  */
 async function handleAttachment(attachment, imageOptions, cacheOptions = {}) {
-  console.log('🧑‍🔬', imageOptions)
-
   const { description, url } = attachment
 
   if (description === null) {
