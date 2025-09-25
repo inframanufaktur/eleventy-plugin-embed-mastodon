@@ -14,6 +14,7 @@ function fetchURL(url, { cacheDir, cacheDuration, token, apiVersion }) {
     duration: cacheDuration,
     directory: cacheDir,
     type: 'json',
+    returnType: undefined,
     fetchOptions: {
       headers: {
         ...getAuthHeader(token, apiVersion),

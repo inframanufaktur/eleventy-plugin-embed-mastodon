@@ -7,7 +7,7 @@ const defaultOptions = {
   mode: 'full',
   cache: true,
   cacheDir: '.mastodon',
-  cacheDuration: '1y',
+  cacheDuration: '*',
   statusApiVersion: 'v1',
   searchApiVersion: 'v2',
 }
