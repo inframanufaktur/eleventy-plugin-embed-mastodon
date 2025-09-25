@@ -1,6 +1,6 @@
 {
   "name": "@inframanufaktur/eleventy-plugin-embed-mastodon",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Eleventy plugin to embed Mastodon posts",
   "main": ".eleventy.js",
   "publishConfig": {
