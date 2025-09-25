@@ -1,4 +1,3 @@
-const asyncReplace = require('string-replace-async')
 const path = require('path')
 const pkg = require('./package.json')
 const { checkAuth } = require('./util/auth')
@@ -61,6 +60,8 @@ module.exports = function (eleventyConfig, { baseOptions, imageOptions }) {
   )
 
   eleventyConfig.addTransform('embedMastodonPosts', async function (content) {
+    const { default: asyncReplace } = await import('string-replace-async')
+
     // https://regexr.com/77hk9
     let mastodonParagraph =
       /<p ?.*>mastodon:([\wd\-]*?.?[\wd\-]*.[a-z]*\/@[\wd_]*(?:@[\wd]*?.?[\wd]*.[a-z]*)?\/)?(\d*)<\/p>/gim
