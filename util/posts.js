@@ -124,7 +124,18 @@ function renderFooter({
 }
 
 async function createPostHTML(id, remoteLink, options) {
-  const postData = await fetchPost(id, remoteLink, options)
+  let postData
+
+  try {
+    postData = await fetchPost(id, remoteLink, options)
+  } catch (error) {
+    // A deleted post or a dead instance must not fail the whole site build.
+    console.warn(
+      `Plugin Embed Mastodon: Could not fetch post ${id} (${error.message}). Skipping embed.`,
+    )
+
+    return ''
+  }
 
   const { url, content, media_attachments, card, account, visibility } =
     postData
